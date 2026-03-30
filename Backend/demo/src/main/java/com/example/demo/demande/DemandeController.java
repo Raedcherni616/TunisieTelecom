@@ -137,4 +137,17 @@ public class DemandeController {
                         .build()
         );
     }
+
+    @GetMapping("/{demandeId}/alternatives")
+    public ResponseEntity<List<LocalDateTime>> getAlternatives(@PathVariable Long demandeId) {
+        Demande demande = demandeService.getDemandeById(demandeId)
+                .orElseThrow(() -> new IllegalStateException("Demande not found with id: " + demandeId));
+        List<LocalDateTime> alternatives = assignmentService.findAlternativeSlots(
+                demande.getCity(),
+                demande.getPreferredDate(),
+                demande.getService().getEstimatedDuration(),
+                7
+        );
+        return ResponseEntity.ok(alternatives);
+    }
 }

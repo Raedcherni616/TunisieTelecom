@@ -2,6 +2,9 @@ package com.example.demo.demande;
 
 import com.example.demo.AppUser.AppUser;
 import com.example.demo.AppUser.AppUserService;
+import com.example.demo.assign.Assignment;
+import com.example.demo.assign.AssignmentRepository;
+import com.example.demo.assign.AssignmentStatus;
 import com.example.demo.service.ServiceService;
 import com.example.demo.service.Services;
 import com.example.demo.assign.AssignmentService;
@@ -21,6 +24,7 @@ public class DemandeServiceImpl implements DemandeService{
     private final DemandeRepository demandeRepository;
     private final ServiceService serviceService;
     private final AssignmentService assignmentService;
+    private final AssignmentRepository assignmentRepository;
     @Override
     public Demande createDemande(DemandeRequest request) {
 
@@ -82,15 +86,25 @@ public class DemandeServiceImpl implements DemandeService{
     public void cancelDemande(Long demandeId, AppUser user) {
 
         Demande demande = demandeRepository.findById(demandeId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalStateException("Demande not found with id: " + demandeId));
 
         if (!demande.getClient().getId().equals(user.getId()) && !isAdmin(user)) {
-
             throw new IllegalStateException("You can only cancel your own demands");
         }
 
-        demande.setStatus(DemandeStatus.CANCELLED);
+        if (demande.getStatus() == DemandeStatus.COMPLETED ||
+                demande.getStatus() == DemandeStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Cannot cancel demande in status: " + demande.getStatus());
+        }
 
+        if (demande.getCurrentAssignment() != null) {
+            Assignment assignment = demande.getCurrentAssignment();
+            assignment.setStatus(AssignmentStatus.FAILED);
+            assignment.setNotes("Cancelled by " + (isAdmin(user) ? "admin" : "client"));
+            assignmentRepository.save(assignment);
+        }
+
+        demande.setStatus(DemandeStatus.CANCELLED);
         demandeRepository.save(demande);
     }
 

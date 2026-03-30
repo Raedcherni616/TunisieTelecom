@@ -29,7 +29,7 @@ public class WebSecurityConfig  {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request.
-                        requestMatchers("/registration").permitAll()
+                        requestMatchers("/registration","/api/geocode/**").permitAll()
                         .anyRequest().permitAll())
                 .authenticationProvider(daoAuthenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter,
