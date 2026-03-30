@@ -47,7 +47,8 @@ public class Assignment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AssignmentStatus status;
+    @Builder.Default
+    private AssignmentStatus status = AssignmentStatus.ASSIGNED;
 
     @Column(length = 1000)
     private String notes;

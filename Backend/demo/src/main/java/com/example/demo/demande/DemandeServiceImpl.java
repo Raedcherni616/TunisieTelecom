@@ -6,6 +6,7 @@ import com.example.demo.service.ServiceService;
 import com.example.demo.service.Services;
 import com.example.demo.assign.AssignmentService;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 @AllArgsConstructor
 
+@Service
 public class DemandeServiceImpl implements DemandeService{
 
     private final AppUserService appUserService;

@@ -30,7 +30,6 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final HolidayService holidayService;
     private final TechnicianLeaveService leaveService;
 
-    // ========== 1. إنشاء التعيينات ==========
 
     @Override
     @Transactional

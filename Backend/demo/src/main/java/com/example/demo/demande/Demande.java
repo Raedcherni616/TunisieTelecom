@@ -51,8 +51,8 @@ public class Demande {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DemandeStatus status;
-
+    @Builder.Default
+    private DemandeStatus status = DemandeStatus.AWAITING_CLIENT;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_assignment_id")
